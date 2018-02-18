@@ -2,7 +2,7 @@ extern crate gnuplot;
 extern crate rand;
 extern crate rayon;
 #[macro_use] extern crate log;
-extern crate env_logger;
+extern crate flexi_logger;
 
 use rayon::prelude::*;
 use gnuplot::{Figure, PointSymbol};
@@ -40,19 +40,23 @@ fn points(f: f32, t:f32, n:usize) -> Vec<(f32,f32)>{
 }
 
 fn main() {
-    env_logger::init();
-    info!("Starting");
+  flexi_logger::Logger::with_env()
+    .format(flexi_logger::detailed_format)
+    .start()
+    .unwrap();
 
-    let xy = points(1.0, 4.0, 1_000_000);
+  info!("Starting");
 
-    info!("y calculé");
+  let xy = points(1.0, 4.0, 1_000_000);
 
-    let x : Vec<f32> = xy.iter().map(|&(x,_y)| x).collect(); 
-    let y : Vec<f32> = xy.iter().map(|&(_x,y)| y).collect(); 
-    let mut fg = Figure::new();
-    fg.axes2d().points(&x, &y, &[PointSymbol('.')]);
-    fg.show();
+  info!("y calculé");
 
-    info!("fini");
+  let x : Vec<f32> = xy.iter().map(|&(x,_y)| x).collect(); 
+  let y : Vec<f32> = xy.iter().map(|&(_x,y)| y).collect(); 
+  let mut fg = Figure::new();
+  fg.axes2d().points(&x, &y, &[PointSymbol('.')]);
+  fg.show();
+
+  info!("fini");
 }
 

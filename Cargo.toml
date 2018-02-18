@@ -7,5 +7,5 @@ authors = ["Ophir LOJKINE <pere.jobs@gmail.com>"]
 rand = "0.4.2"
 gnuplot = "0.0.24"
 log = "0.4.1"
-env_logger = "0.5.3"
+flexi_logger = "0.6.13"
 rayon = "1.0"
