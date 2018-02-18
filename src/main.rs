@@ -2,7 +2,7 @@ extern crate gnuplot;
 extern crate rand;
 extern crate rayon;
 #[macro_use] extern crate log;
-extern crate simple_logger;
+extern crate env_logger;
 
 use rayon::prelude::*;
 use gnuplot::{Figure, PointSymbol};
@@ -40,7 +40,7 @@ fn points(f: f32, t:f32, n:usize) -> Vec<(f32,f32)>{
 }
 
 fn main() {
-    simple_logger::init().unwrap();
+    env_logger::init();
     info!("Starting");
 
     let xy = points(1.0, 4.0, 1_000_000);
