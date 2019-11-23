@@ -1,12 +1,9 @@
-extern crate gnuplot;
-extern crate rand;
-extern crate rayon;
-#[macro_use] extern crate log;
-extern crate flexi_logger;
-
-use rayon::prelude::*;
 use gnuplot::{Figure, PointSymbol};
-use rand::{Rng, Open01, XorShiftRng};
+use rand::{distributions::Open01, Rng, SeedableRng};
+use rand_xorshift::XorShiftRng;
+use rayon::prelude::*;
+
+use log::{info, log};
 
 fn fun (lambda: f32, x: f32) -> f32 {
   lambda * x * (1.-x)
@@ -19,12 +16,8 @@ fn compute_y(lambda: f32, seed: f32) -> f32 {
 }
 
 fn points(f: f32, t:f32, n:usize) -> Vec<(f32,f32)>{
-
-  let mut rng = XorShiftRng::new_unseeded();
-  let seeds : Vec<f32> = rng.gen_iter::<Open01<f32>>()
-    .take(n)
-    .map(|Open01(x)| x)
-    .collect();
+  let rng = XorShiftRng::from_entropy();
+  let seeds: Vec<f32> = rng.sample_iter(Open01).take(n).collect();
 
   let step = (t-f) / (n as f32);
 
@@ -32,7 +25,7 @@ fn points(f: f32, t:f32, n:usize) -> Vec<(f32,f32)>{
     .into_par_iter()
     .zip(seeds)
     .map(|(k, seed)| {
-      let x = f + (k as f32)*step;
+      let x = step.mul_add(k as f32, f);
       let y = compute_y(x, seed);
       (x,y)
     })
@@ -55,7 +48,7 @@ fn main() {
   let y : Vec<f32> = xy.iter().map(|&(_x,y)| y).collect(); 
   let mut fg = Figure::new();
   fg.axes2d().points(&x, &y, &[PointSymbol('.')]);
-  fg.show();
+  fg.show().unwrap();
 
   info!("fini");
 }

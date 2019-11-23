@@ -2,10 +2,12 @@
 name = "logisticmap"
 version = "0.1.0"
 authors = ["Ophir LOJKINE <pere.jobs@gmail.com>"]
+edition = "2018"
 
 [dependencies]
-rand = "0.4.2"
-gnuplot = "0.0.24"
+rand = "0.7"
+rand_xorshift = "0.2.0"
+gnuplot = "0.0.32"
 log = "0.4.1"
-flexi_logger = "0.6.13"
-rayon = "1.0"
+flexi_logger = "0.14"
+rayon = "1.2"
